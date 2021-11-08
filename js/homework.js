@@ -39,10 +39,12 @@ const personalMovieDB = {
   },
   writeYourGenres: function() {
     for (let i = 1; i <= 3; i++) {
-      personalMovieDB.genres[i-1] = prompt(`Ваш улюблений жанр під номером ${i}?`, "").toLowerCase();
+      personalMovieDB.genres[i-1] = prompt(`Ваш улюблений жанр під номером ${i}?`, "");
       if (personalMovieDB.genres[i-1] === null || personalMovieDB.genres[i-1] === '') {
         i--;
         console.log('Ви ввели некоректні дані');
+      } else {
+        personalMovieDB.genres[i-1] = personalMovieDB.genres[i-1].toLowerCase();
       }
     }
     // personalMovieDB.genres.forEach(function(item, i) {
