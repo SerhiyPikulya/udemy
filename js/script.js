@@ -53,7 +53,7 @@
 // console.log(object); // ['Буква: a', 'Буква: b', 'Буква: c']
 
 
-// // ВЗАЄМОДІЯ З СТОРіНКОЮ
+// // ВЗАЄМОДІЯ З СТОРіНКОЮ //ДІЇ З ЕЛЕМЕНТАМИ НА СТОРІНЦІ
 
 const box = document.getElementById('box'), // отримати елемент в змінну по id
       btns = document.getElementsByTagName('button'), // отримати елементИ по тегу
@@ -67,7 +67,7 @@ btns[1].style.borderRadius = '100%';
 
 // box.style.cssText = `backgroundColor: green; width: ${num}px`; // багато інлайн стилів в форматі css
 
-hearts.forEach(item => {                                  //перебір елементів для querySelectorAll (можна ще циклом або for of)
+hearts.forEach(item => {                 //перебір елементів для querySelectorAll (можна ще циклом або for of)
   item.style.backgroundColor = 'blue';
 });
 
@@ -96,6 +96,90 @@ div2.innerHTML = '<h1>Вставка HTML</h1>'; // Вставка HTML
 // div2.textContent = 'Вставка тексту, без HTML';
 
 div2.insertAdjacentHTML("afterend", '<h2>beforebegin, beforeend, afterbegin</h2>'); // Вставка HTML перед, після, в початок, в кінець елемента
+
+
+// ПОДІЇ ТА ЇХ ОБРОБНИКИ
+// Простий список подій https://oddler.ru/blog/i63
+// Довідник подій: https://developer.mozilla.org/ru/docs/Web/Events
+
+// <button oclick="alert('Обробник кліка')" id="btn">Тисни сюди</button>
+
+const btn = document.querySelector('button');
+
+// btn.onclick = function() {alert('Обробник кліка');} // Подія на елемент, застаріла
+
+// btn.addEventListener('click', () => {
+//   alert('Обробник кліка, ін.події, назва в першому аргументі');
+// });
+
+btn.addEventListener('mouseenter', (event, num) => {
+  alert('Обробник кліка; Enent - в першу змінну передається об"єкт - ПОДІЯ'); 
+  console.log(event.target); //event - ключові вастивості: тип події, на якому елементі відбулася подія
+  event.target.remove(); // взаємодія з елементами події
+});
+
+// ВИДАЛЕННЯ ОБРОБНИКА // ПЕРЕД цим потрібно покласти в змінну кол-бек функцію
+// ПРИКЛАД ВИКОРИСТАННЯ
+let i = 0;
+const delElement = (event) => {   //обробник
+  event.target.remove(); // що зробити після події
+  i++;
+  if (i == 1) {
+    btn.removeEventListener('click', delElement);  //видалити обробник події
+  }
+};
+
+btn.addEventListener('click', delElement);  //призначити обробник події
+//***
+
+// ВСПЛИВАННЯ ПОДІЙ - події виконуються в порядку з внутрішнього елемента до зовнішнього
+// event.currentTarget // щоб побачити всі зовнішні елементи події
+
+// СТАНДАРТНА ПОВЕДІНКА БРАУЗЕРА ВІДМІНА
+const link = document.querySelector('a');
+
+link.addEventListener('click', (event) => {
+  event.preventDefault(); //відміна стандартної поведінки браузера
+  console.log(event.target); // потрібна нам поведінка
+});
+
+// ЯК ОДИН ОБРОБНИК ПОВІСИТИ НА БАГАТО ЕЛЕМЕНТІВ - перебрати масив циклом For of або ForEach
+btn.forEach(item => {
+  item.addEventListener('click', deleteElement);
+});
+
+// ОПЦІЇ ПОДІЇ addEventListener https://developer.mozilla.org/ru/docs/Web/API/EventTarget/addEventListener
+//item.addEventListener('click', deleteElement, {once: true}); // спрацювання події deleteElement тільки один раз
+
+
+// НАВІГАЦІЯ ПО DOM
+// console.log(document.head); // Звернутися до Хедера
+// console.log(document.documentElement); // Звернутися до всіх елементів сторінки
+// console.log(document.body.childNodes); // childNodes - отримати псевдомасив з всіма вузлами батька: Елементи - теги і вузли - їх вміст
+// console.log(document.body.firstChild); // Пешша нода (вузол) дитина
+// console.log(document.body.firstElementChild); // Перший елемент дитина
+// console.log(document.body.lastChild);
+
+console.log(document.querySelector('#current').parentNode); // отримати батька
+console.log(document.querySelector('#current').parentNode.parentNode); //отримати батька батька
+console.log(document.querySelector('#current').parentElement); // отримати батьківський Елемент
+
+
+console.log(document.querySelector('[data-current="3"]')); // отримати data атрибути тегу
+//article.dataset.current // 3 https://developer.mozilla.org/ru/docs/Learn/HTML/Howto/Use_data_attributes
+console.log(document.querySelector('[data-current="3"]').nextSibling); // наступний вузол після data
+console.log(document.querySelector('[data-current="3"]').previousSibling); // попередній вузол після data
+console.log(document.querySelector('[data-current="3"]').nextElementSibling); // наступний Елемент після data
+
+// ОТРИМАТИ ВСІ ЕЛЕМЕНТИ НА СТОРІНЦІ, крім текстових
+for (let node of document.body.childNodes) {
+  if (node.nodeName == '#text') {
+    continue;
+  }
+  console.log(node);
+}
+// children - выдает нам html-коллекцию только из Elements, без ненужных нам текстовых Node
+// getAttribute/setAttribute - отримання і зміна data атрибутів
 
 
 //ЗАВДАННЯ НА РОЗУМІННЯ ПРИНЦИПІВ РОБОТИ JS
